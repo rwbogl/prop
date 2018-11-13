@@ -5,12 +5,19 @@ import Text.Parsec.Expr
 import Text.Parsec.Language
 import Text.Parsec
 
-data Term = Variable String
-          | Disjunction Term Term
-          | Conjunction Term Term
-          | Negation Term
+data Term = Var String
+          | Dis Term Term
+          | Con Term Term
+          | Neg Term
           | Query Term
-          deriving Show
+
+instance Show Term where show = showTerm
+
+showTerm (Var s) = s
+showTerm (Dis x y) = "(" ++ show x ++ ") + (" ++ show y ++ ")"
+showTerm (Con x y) = "(" ++ show x ++ ") * (" ++ show y ++ ")"
+showTerm (Neg x) = "~(" ++ show x ++ ")"
+showTerm (Query x) = "?(" ++ show x ++ ")"
 
 def = emptyDef { Token.commentStart = "/*"
                , Token.commentEnd = "*/"
@@ -24,13 +31,13 @@ parseExpr = buildExpressionParser table term
 -- This works because type constructors can be curried. I assume that Parsec is
 -- treating whatever we spit out here as a function to apply later, which is
 -- happily supplied a term later on.
-table = [ [Prefix (reservedOp "?" >> return Query)] 
-        , [Prefix (reservedOp "~" >> return Negation)] 
-        , [Infix (reservedOp "*" >> return Conjunction) AssocRight]
-        , [Infix (reservedOp "+" >> return Disjunction) AssocRight]
+table = [ [Prefix (reservedOp "?" >> return Query)]
+        , [Prefix (reservedOp "~" >> return Neg)]
+        , [Infix (reservedOp "*" >> return Con) AssocRight]
+        , [Infix (reservedOp "+" >> return Dis) AssocRight]
         ]
 
-term = parens parseExpr <|> fmap Variable identifier
+term = parens parseExpr <|> fmap Var identifier
 
 lexer = Token.makeTokenParser def
 identifier = Token.identifier lexer
@@ -38,10 +45,11 @@ reservedOp = Token.reservedOp lexer
 whitespace = Token.whiteSpace lexer
 parens = Token.parens lexer
 
-readExpr :: String -> String
+readExpr :: String -> Term
 readExpr input =
     case parse parseExpr "resolution" input of
-      Left err -> show err
-      Right val -> show val
+      Left err -> Var (show err)
+      Right val -> val
 
+readLines :: String -> [Term]
 readLines = map readExpr . lines

@@ -13,4 +13,4 @@ main = do
     -- We want to do a bunch of stuff to a list and not care about the results,
     -- which is precisely what mapM_ does. (cf. mapM, which would return IO
     -- [()].
-    mapM_ putStrLn $ readLines contents
+    mapM_ print $ readLines contents
