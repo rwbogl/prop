@@ -13,6 +13,12 @@ cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
 cnf (Query t) = Query $ cnf t
 cnf oth = oth
 
+-- Split the top-level conjunctives off into separate lists.
+splitCons :: [Term] -> [Term]
+splitCons = foldr (\term acc -> splitCon term ++ acc) []
+    where splitCon (Con x y) = splitCon x ++ splitCon y
+          splitCon other = [other]
+
 -- Negate a term.
 neg :: Term -> Term
 neg (Var a) = Neg (Var a)
