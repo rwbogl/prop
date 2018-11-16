@@ -5,15 +5,16 @@ import System.Environment
 import Parser
 import Resolve
 
--- I'm not sure what the linter is complaining about here. Something about
--- functors? I don't really know what those are yet.
--- (I think that it's just a way to map and raise back to the monad. Something
--- like `f <$> g == g >>= (return . f)`.
--- Oh yeah! Monads support fmap, which is really what we're doing here. <$> is
--- just an infix synonym for fmap.
-parseFile :: String -> IO [Term]
+{-| Parse a file into CNF form where each sublist contains the literal
+   arguments of a disjunction.
+
+   Examples:
+        (A + B) * (C + D) -> [[A, B], [C, D]]
+        (A * B) + C -> [[A, C], [B, C]]
+-}
+parseFile :: String -> IO [[Term]]
 parseFile path = fmap (toCNF . readLines) $ readFile path
-    where toCNF = splitCons . map cnf
+    where toCNF = map flattenDis . splitCons . map cnf
 
 main = do
     (path:_) <- getArgs
