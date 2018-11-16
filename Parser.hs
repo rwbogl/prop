@@ -51,7 +51,7 @@ parens = Token.parens lexer
 
 readExpr :: String -> Term
 readExpr input =
-    case parse parseExpr "resolution" input of
+    case parse parseExpr "" input of
       Left err -> Var (show err)
       Right val -> val
 
