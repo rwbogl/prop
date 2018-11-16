@@ -10,6 +10,8 @@ data Term = Var String
           | Con Term Term
           | Neg Term
           | Query Term
+          | Empty
+          deriving Eq
 
 instance Show Term where show = showTerm
 
@@ -18,6 +20,7 @@ showTerm (Dis x y) = "(" ++ show x ++ ") + (" ++ show y ++ ")"
 showTerm (Con x y) = "(" ++ show x ++ ") * (" ++ show y ++ ")"
 showTerm (Neg x) = "~(" ++ show x ++ ")"
 showTerm (Query x) = "?(" ++ show x ++ ")"
+showTerm Parser.Empty = "Empty"
 
 def = emptyDef { Token.commentStart = "/*"
                , Token.commentEnd = "*/"
