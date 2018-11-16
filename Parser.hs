@@ -90,4 +90,3 @@ cnf (Dis (Var a) (x `Con` y)) = left `Con` right
 cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
 cnf (Query t) = Query $ cnf t
 cnf oth = oth
-
