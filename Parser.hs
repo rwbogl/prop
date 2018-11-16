@@ -4,6 +4,7 @@ import qualified Text.Parsec.Token as Token
 import Text.Parsec.Expr
 import Text.Parsec.Language
 import Text.Parsec
+import Data.List
 
 data Term = Var String
           | Dis Term Term
@@ -56,3 +57,37 @@ readExpr input =
 
 readLines :: String -> [Term]
 readLines = map readExpr . lines
+
+{-| Parse a file into CNF form where each sublist contains the literal
+   arguments of a disjunction.
+
+   Examples:
+        (A + B) * (C + D) -> [[A, B], [C, D]]
+        (A * B) + C -> [[A, C], [B, C]]
+-}
+parseFiletoCNF :: String -> IO [[Term]]
+parseFiletoCNF path = fmap (toCNF . readLines) $ readFile path
+    where toCNF = nub . map flattenDis . splitCons . map cnf
+
+-- Flatten an n-ary disjunction into a list of literals.
+flattenDis :: Term -> [Term]
+flattenDis (Dis x y) = flattenDis x ++ flattenDis y
+flattenDis other = [other]
+
+-- Split the top-level conjunctives off into separate lists.
+splitCons :: [Term] -> [Term]
+splitCons = foldr (\term acc -> splitCon term ++ acc) []
+    where splitCon (Con x y) = splitCon x ++ splitCon y
+          splitCon other = [other]
+
+-- Translate a term into conjunctive normal form.
+cnf :: Term -> Term
+-- Recursively apply De Morgan's law.
+cnf (Dis (Var a) (x `Con` y)) = left `Con` right
+    where left = cnf $ Dis (Var a) x
+          right = cnf $ Dis (Var a) y
+-- Swap argument order to fall into first case.
+cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
+cnf (Query t) = Query $ cnf t
+cnf oth = oth
+

@@ -4,23 +4,6 @@ import Parser
 import Data.List
 import Data.Maybe
 
--- Translate a term into conjunctive normal form.
-cnf :: Term -> Term
--- Recursively apply De Morgan's law.
-cnf (Dis (Var a) (x `Con` y)) = left `Con` right
-    where left = cnf $ Dis (Var a) x
-          right = cnf $ Dis (Var a) y
--- Swap argument order to fall into first case.
-cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
-cnf (Query t) = Query $ cnf t
-cnf oth = oth
-
--- Split the top-level conjunctives off into separate lists.
-splitCons :: [Term] -> [Term]
-splitCons = foldr (\term acc -> splitCon term ++ acc) []
-    where splitCon (Con x y) = splitCon x ++ splitCon y
-          splitCon other = [other]
-
 -- Negate a term.
 neg :: Term -> Term
 neg (Var a) = Neg (Var a)
@@ -39,10 +22,6 @@ neg (Neg t) = t
         the clauses.
 -}
 
--- Flatten an n-ary disjunction into a list of literals.
-flattenDis :: Term -> [Term]
-flattenDis (Dis x y) = flattenDis x ++ flattenDis y
-flattenDis other = [other]
 
 {-| Given two disjunctions of literals (in list form), try to resolve them in
    any way possible.
