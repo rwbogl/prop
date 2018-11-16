@@ -14,12 +14,13 @@ neg (Neg t) = t
 
 {-
    Can `query` be proven from a given list of clauses?
-   To check:
-        1. Append the negation of `query` to the list.
-        2. Apply the resolution algorithm to the resulting list.
-        3. If a contradiction occurs, then our query must be true.
-        4. If the clauses are satisfiable, then we cannot prove the query from
-        the clauses.
+   We check by contradiction:
+        1. Append the negation of `query` to the clauses.
+        2. Apply some CNF-SAT solver to the resulting clauses.
+        3. If the clauses are unsatisfiable, then our query must be true.
+        4. If the clauses are satisfiable, then the query is independent of our
+        initial clauses.
+checkQuery (Query q) clauses = (not . sat) $ flattenCNF (neg q:clauses)
 -}
 
 sat :: [[Term]] -> Bool
