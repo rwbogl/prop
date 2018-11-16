@@ -22,6 +22,27 @@ neg (Neg t) = t
         the clauses.
 -}
 
+sat :: [[Term]] -> Bool
+sat clauses = sat' clauses []
+
+{- Resolution algorithm:
+    1. If possible, choose any two clauses with complementary literals. If
+       impossible, return True.
+    2. Form the resolvant.
+    3. If it's empty, then return false.
+    4. If it's not empty, then go back to step 1.
+-}
+
+sat' :: [[Term]] -> [([Term], [Term])] -> Bool
+sat' clauses seen
+  | null resolvants = True
+  | any null resolvants = False
+  | otherwise = sat' (clauses ++ resolvants) (seen ++ newSeen)
+    where resolvePairs = [((x, y), fromJust r) | x <- clauses, y <- clauses,
+                                                    (x, y) `notElem` seen,
+                                                    let r = resolve x y,
+                                                    isJust r]
+          (newSeen, resolvants) = unzip resolvePairs
 
 {-| Given two disjunctions of literals (in list form), try to resolve them in
    any way possible.
