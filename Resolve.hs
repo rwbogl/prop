@@ -46,16 +46,10 @@ flattenDis :: Term -> [Term]
 flattenDis (Dis x y) = flattenDis x ++ flattenDis y
 flattenDis other = [other]
 
--- Concat a list of terms into a single disjunction with an Empty.
-deepenDis :: [Term] -> Term
-deepenDis = foldr Dis Empty
-
--- Oh shit, we got some monads up in here.
--- First time I've used them "in the wild."
-resolve :: Term -> Term -> Maybe Term
-resolve left@(Dis _ _) right@(Dis _ _) = do
-    x <- find ((`elem` disRight) . neg) disLeft
-    let resolvant = (disLeft \\ [x]) `union` (disRight \\ [neg x]) in
-        return $ deepenDis resolvant
-            where disLeft = nub $ flattenDis left
-                  disRight = nub $ flattenDis right
+{-| Given two disjunctions of literals (in list form), try to resolve them in
+   any way possible.
+-}
+resolve :: [Term] -> [Term] -> Maybe [Term]
+resolve left right = do
+    x <- find (\x -> neg x `elem` right) left
+    return $ (left \\ [x]) `union` (right \\ [neg x])
