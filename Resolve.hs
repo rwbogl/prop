@@ -38,8 +38,6 @@ neg (Neg t) = t
         4. If the clauses are satisfiable, then we cannot prove the query from
         the clauses.
 -}
--- resolve :: Term -> [Term] -> Bool
--- resolve query clauses = (not . sat) $ map cnf (neg query : clauses)
 
 -- Flatten an n-ary disjunction into a list of literals.
 flattenDis :: Term -> [Term]
