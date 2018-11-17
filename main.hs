@@ -29,5 +29,5 @@ main = do
         trueQueries = filter (clausesEntail cnfClauses) queries
     print cnfClauses
     print queries
-    print "Queries that follow:"
+    putStrLn "Queries that follow:"
     mapM_ print trueQueries
