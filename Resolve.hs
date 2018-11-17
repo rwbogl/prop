@@ -17,6 +17,28 @@ neg (Con x y) = Dis (neg x) (neg y)
 neg (Query x) = Query $ neg x
 neg (Neg t) = t
 
+clausesEntail :: CNF -> Term -> Bool
+clausesEntail clauses (Query x) = not . sat $ negated ++ clauses
+    where negated = clauseToCNF $ neg x
+
+{-| Translate a list of terms into a CNF list. -}
+clausesToCNF :: [Term] -> CNF
+clausesToCNF = map flattenDis . splitCons . map cnf
+
+clauseToCNF :: Term -> CNF
+clauseToCNF = clausesToCNF . (: [])
+
+-- Translate a term into conjunctive normal form.
+cnf :: Term -> Term
+-- Recursively apply De Morgan's law.
+cnf (Dis (Var a) (x `Con` y)) = left `Con` right
+    where left = cnf $ Dis (Var a) x
+          right = cnf $ Dis (Var a) y
+-- Swap argument order to fall into first case.
+cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
+cnf (Query t) = Query $ cnf t
+cnf oth = oth
+
 {-
    Can `query` be proven from a given list of clauses?
    We check by contradiction:

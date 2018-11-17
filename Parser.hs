@@ -65,9 +65,8 @@ readLines = map readExpr . lines
         (A + B) * (C + D) -> [[A, B], [C, D]]
         (A * B) + C -> [[A, C], [B, C]]
 -}
-parseFiletoCNF :: String -> IO [[Term]]
-parseFiletoCNF path = fmap (toCNF . readLines) $ readFile path
-    where toCNF = nub . map flattenDis . splitCons . map cnf
+parseFile :: String -> IO [Term]
+parseFile = fmap readLines . readFile
 
 -- Flatten an n-ary disjunction into a list of literals.
 flattenDis :: Term -> [Term]
@@ -79,14 +78,3 @@ splitCons :: [Term] -> [Term]
 splitCons = foldr (\term acc -> splitCon term ++ acc) []
     where splitCon (Con x y) = splitCon x ++ splitCon y
           splitCon other = [other]
-
--- Translate a term into conjunctive normal form.
-cnf :: Term -> Term
--- Recursively apply De Morgan's law.
-cnf (Dis (Var a) (x `Con` y)) = left `Con` right
-    where left = cnf $ Dis (Var a) x
-          right = cnf $ Dis (Var a) y
--- Swap argument order to fall into first case.
-cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
-cnf (Query t) = Query $ cnf t
-cnf oth = oth
