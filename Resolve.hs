@@ -17,18 +17,31 @@ neg (Con x y) = Dis (neg x) (neg y)
 neg (Query x) = Query $ neg x
 neg (Neg t) = t
 
+{-| Check if a CNF list of clauses entail a query. -}
 clausesEntail :: CNF -> Term -> Bool
 clausesEntail clauses (Query x) = not . sat $ negated ++ clauses
     where negated = clauseToCNF $ neg x
+
+{-| Translate a term into a CNF list. -}
+clauseToCNF :: Term -> CNF
+clauseToCNF = clausesToCNF . (: [])
 
 {-| Translate a list of terms into a CNF list. -}
 clausesToCNF :: [Term] -> CNF
 clausesToCNF = map flattenDis . splitCons . map cnf
 
-clauseToCNF :: Term -> CNF
-clauseToCNF = clausesToCNF . (: [])
+-- Flatten an n-ary disjunction into a list of literals.
+flattenDis :: Term -> [Term]
+flattenDis (Dis x y) = flattenDis x ++ flattenDis y
+flattenDis other = [other]
 
--- Translate a term into conjunctive normal form.
+-- Split the top-level conjunctives off into separate lists.
+splitCons :: [Term] -> [Term]
+splitCons = foldr (\term acc -> splitCon term ++ acc) []
+    where splitCon (Con x y) = splitCon x ++ splitCon y
+          splitCon other = [other]
+
+{-| Translate a term into conjunctive normal form. -}
 cnf :: Term -> Term
 -- Recursively apply De Morgan's law.
 cnf (Dis (Var a) (x `Con` y)) = left `Con` right
@@ -39,17 +52,7 @@ cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
 cnf (Query t) = Query $ cnf t
 cnf oth = oth
 
-{-
-   Can `query` be proven from a given list of clauses?
-   We check by contradiction:
-        1. Append the negation of `query` to the clauses.
-        2. Apply some CNF-SAT solver to the resulting clauses.
-        3. If the clauses are unsatisfiable, then our query must be true.
-        4. If the clauses are satisfiable, then the query is independent of our
-        initial clauses.
-checkQuery (Query q) clauses = (not . sat) $ flattenCNF (neg q:clauses)
--}
-
+{-| Check if a CNF list of clauses are satisfiable. -}
 sat :: CNF -> Bool
 sat clauses = sat' clauses []
 
@@ -72,9 +75,7 @@ sat' clauses seen
                                                     isJust r]
           (newSeen, resolvants) = unzip resolvePairs
 
-{-| Given two disjunctions of literals (in list form), try to resolve them in
-   any way possible.
--}
+{-| Try to resolve two disjunctions of literals. -}
 resolve :: DisList -> DisList -> Maybe DisList
 resolve left right = do
     x <- find (\x -> neg x `elem` right) left
