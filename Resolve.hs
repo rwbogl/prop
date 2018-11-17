@@ -4,6 +4,11 @@ import Parser
 import Data.List
 import Data.Maybe
 
+-- This represents a sequence of disjunctions of literals joined with
+-- conjunctions.
+type DisList = [Term]
+type CNF = [DisList]
+
 -- Negate a term.
 neg :: Term -> Term
 neg (Var a) = Neg (Var a)
@@ -23,7 +28,7 @@ neg (Neg t) = t
 checkQuery (Query q) clauses = (not . sat) $ flattenCNF (neg q:clauses)
 -}
 
-sat :: [[Term]] -> Bool
+sat :: CNF -> Bool
 sat clauses = sat' clauses []
 
 {- Resolution algorithm:
@@ -34,7 +39,7 @@ sat clauses = sat' clauses []
     4. If it's not empty, then go back to step 1.
 -}
 
-sat' :: [[Term]] -> [([Term], [Term])] -> Bool
+sat' :: CNF -> [(DisList, DisList)] -> Bool
 sat' clauses seen
   | null resolvants = True
   | any null resolvants = False
@@ -48,7 +53,7 @@ sat' clauses seen
 {-| Given two disjunctions of literals (in list form), try to resolve them in
    any way possible.
 -}
-resolve :: [Term] -> [Term] -> Maybe [Term]
+resolve :: DisList -> DisList -> Maybe DisList
 resolve left right = do
     x <- find (\x -> neg x `elem` right) left
     return $ (left \\ [x]) `union` (right \\ [neg x])
