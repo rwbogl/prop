@@ -35,10 +35,10 @@ parseExpr = buildExpressionParser table term
 -- This works because type constructors can be curried. I assume that Parsec is
 -- treating whatever we spit out here as a function to apply later, which is
 -- happily supplied a term later on.
-table = [ [Prefix (reservedOp "?" >> return Query)]
-        , [Prefix (reservedOp "~" >> return Neg)]
+table = [ [Prefix (reservedOp "~" >> return Neg)]
         , [Infix (reservedOp "*" >> return Con) AssocRight]
         , [Infix (reservedOp "+" >> return Dis) AssocRight]
+        , [Prefix (reservedOp "?" >> return Query)]
         ]
 
 term = parens parseExpr <|> fmap Var identifier
