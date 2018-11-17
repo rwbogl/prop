@@ -1,4 +1,4 @@
-{- resolution: A resolution-based theorem prover in Haskell -}
+{- proph: A resolution-based theorem prover in Haskell -}
 
 module Main where
 import System.Environment
