@@ -1,4 +1,4 @@
-{- proph: A resolution-based theorem prover in Haskell -}
+{- proph - A simple resolution-based theorem prover for propositional logic. -}
 
 module Main where
 import System.Environment
