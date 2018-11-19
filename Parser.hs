@@ -6,6 +6,15 @@ import Text.Parsec.Language
 import Text.Parsec
 import Data.List
 
+{-|
+   How this can be improved:
+
+        1. We're explicitly parsing by line. If we want to do the
+        period-separator idea, then we'll need to nix that. To nix that, we'll
+        need to actually understand how to use Parsec.
+
+-}
+
 data Term = Var String
           | Dis Term Term
           | Con Term Term
