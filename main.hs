@@ -45,9 +45,8 @@ isQuery _ = False
         4. Implement a REPL.
 -}
 
-main = do
-    (path:_) <- getArgs
-    statements <- parseFile path
+handleStatements :: [Term] -> IO ()
+handleStatements statements = do
     let (queries, clauses) = partition isQuery statements
         cnfClauses = clausesToCNF clauses
         trueQueries = filter (clausesEntail cnfClauses) queries
@@ -57,3 +56,10 @@ main = do
     print queries
     putStrLn "Queries that follow:"
     mapM_ print trueQueries
+
+main = do
+    (path:_) <- getArgs
+    contents <- readFile path
+    case parseInput contents of
+      Left err -> print err
+      Right statements -> handleStatements statements

@@ -5,6 +5,9 @@ import Text.Parsec.Expr
 import Text.Parsec.Language
 import Text.Parsec
 import Data.List
+import Control.Monad.Except
+
+type ThrowsError = Either ParseError
 
 {-|
    How this can be improved:
@@ -58,9 +61,5 @@ prophParse = whitespace >> declarations
 declarations = endBy1 expr (char '.' >> whitespace)
 
 {-| Parse a file into a list of terms. -}
-parseFile :: String -> IO [Term]
-parseFile file = do
-    contents <- readFile file
-    return $ case parse prophParse "" contents of
-      Left err -> [Var $ "parse error: " ++ show err]
-      Right val -> val
+parseInput :: String -> ThrowsError [Term]
+parseInput = parse prophParse ""
