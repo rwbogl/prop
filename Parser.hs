@@ -48,7 +48,7 @@ table = [ [Prefix (reservedOp "~" >> return Neg)]
         , [Prefix (reservedOp "?" >> return Query)]
         ]
 
-term = parens expr <|> fmap Var identifier
+term = parens expr <|> fmap Var identifier <?> "beginning of expression"
 
 lexer = Token.makeTokenParser def
 identifier = Token.identifier lexer
@@ -58,7 +58,7 @@ parens = Token.parens lexer
 
 prophParse = whitespace >> declarations
 
-declarations = endBy1 expr (char '.' >> whitespace)
+declarations = endBy1 expr (char '.' >> whitespace) <?> "declaration"
 
 {-| Parse a file into a list of terms. -}
 parseInput :: String -> ThrowsError [Term]
