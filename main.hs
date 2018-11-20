@@ -11,16 +11,9 @@ isQuery (Query _) = True
 isQuery _ = False
 
 {-|
-   Okay, things look pretty good so far!
+    Okay, things look pretty good so far!
 
-   Next up:
-
-        1. Improve the parser. It handles errors in a dangerous way right now.
-        Also, it's got a very restrictive syntax. We should adopt Prolog's
-        period terminator, I think.
-
-            1.1. Improve the parsing itself.
-            1.2. Improve error handling.
+    Next up:
 
         2. Improve our resolution algorithm implementation. Right now we just
         try every possible combination, which is easy to write, but terribly
@@ -32,6 +25,10 @@ isQuery _ = False
         such proof, but that might be asking for too much of me right now.
 
         4. Implement a REPL.
+
+    Done:
+
+        1. Improved parser and error handling.
 -}
 
 handleStatements :: [Term] -> IO ()
