@@ -28,10 +28,17 @@ data Term = Var String
 instance Show Term where show = showTerm
 
 showTerm (Var s) = s
-showTerm (Dis x y) = "(" ++ show x ++ ") + (" ++ show y ++ ")"
-showTerm (Con x y) = "(" ++ show x ++ ") * (" ++ show y ++ ")"
-showTerm (Neg x) = "~(" ++ show x ++ ")"
-showTerm (Query x) = "?(" ++ show x ++ ")"
+showTerm (Dis x y) = wrapComplex x ++ " + " ++ wrapComplex y
+showTerm (Con x y) = wrapComplex x ++ " * " ++ wrapComplex y
+showTerm (Neg x) = "~" ++ wrapComplex x
+showTerm (Query x) = "?" ++ wrapComplex x
+
+wrapComplex :: Term -> String
+wrapComplex (Var x) = x
+-- We don't need to wrap negations in parenthesis if they're binding to a
+-- variable. Thus, just show it if that's the case.
+wrapComplex exp@(Neg (Var s)) = show exp
+wrapComplex other = "(" ++ show other ++ ")"
 
 def = emptyDef { Token.commentStart = "/*"
                , Token.commentEnd = "*/"
