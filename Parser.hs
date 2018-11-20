@@ -37,7 +37,7 @@ def = emptyDef { Token.commentStart = "/*"
                , Token.reservedOpNames = ["+", "~", "*"]
                }
 
-parseExpr = buildExpressionParser table term
+expr = buildExpressionParser table term
 
 table = [ [Prefix (reservedOp "~" >> return Neg)]
         , [Infix (reservedOp "*" >> return Con) AssocRight]
@@ -45,7 +45,7 @@ table = [ [Prefix (reservedOp "~" >> return Neg)]
         , [Prefix (reservedOp "?" >> return Query)]
         ]
 
-term = parens parseExpr <|> fmap Var identifier
+term = parens expr <|> fmap Var identifier
 
 lexer = Token.makeTokenParser def
 identifier = Token.identifier lexer
@@ -53,15 +53,14 @@ reservedOp = Token.reservedOp lexer
 whitespace = Token.whiteSpace lexer
 parens = Token.parens lexer
 
-readExpr :: String -> Term
-readExpr input =
-    case parse parseExpr "" input of
-      Left err -> Var (show err)
-      Right val -> val
+prophParse = whitespace >> declarations
 
-readLines :: String -> [Term]
-readLines = map readExpr . lines
+declarations = endBy1 expr (char '.' >> whitespace)
 
 {-| Parse a file into a list of terms. -}
 parseFile :: String -> IO [Term]
-parseFile = fmap readLines . readFile
+parseFile file = do
+    contents <- readFile file
+    return $ case parse prophParse "" contents of
+      Left err -> [Var $ "parse error: " ++ show err]
+      Right val -> val
