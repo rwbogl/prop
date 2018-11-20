@@ -6,17 +6,6 @@ import Parser
 import Resolve
 import Data.List
 
-a = Var "A"
-b = Var "B"
-c = Var "C"
-d = Var "D"
-
-u = Dis a (Dis b c)
-v = Dis (Neg a) (Dis b c)
-
-ul = flattenDis u
-vl = flattenDis v
-
 isQuery :: Term -> Bool
 isQuery (Query _) = True
 isQuery _ = False
