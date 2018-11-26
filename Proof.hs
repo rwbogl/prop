@@ -21,7 +21,7 @@ clausesEntailProof clauses (Query x) = do
 
 printProof :: [Term] -> Term -> QueueItem -> IO ()
 printProof clauses query queue = do
-    putStrLn "THEOREM. The clauses "
+    putStrLn "THEOREM. The clauses"
     putStrLn $ "\t" ++ show clauses
     putStrLn "imply the statement"
     putStrLn $ "\t" ++ show query ++ "."
