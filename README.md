@@ -13,46 +13,58 @@ components are weak.)
 In the file `test.ph`:
 
 ```
-~(A) + B.
-~B + C.
-A.
-? C.
+(A + B) * (C + D).
+~D.
+~B.
+?A * C.
+?A * D.
 ```
 
 Output:
 
 ```
 $ ./main test.ph
-
 THEOREM. The clauses
-    [~A + B,~B + C,A]
+	[(A + B) * (C + D),~D,~B]
 imply the statement
-    C.
+	A * C.
 PROOF. Translate everything into conjunctive normal form:
-    Clauses: [~A + B,~B + C,A]
-    Query: C
+	Clauses: [(A + B) * (C + D),~D,~B]
+	Query: A * C
 Assume, for the sake of contradiction,
-    ~C.
+	~A + ~C.
 Then we may reason as follows.
 The clauses
-    ~A + B
+	A + B
 and
-    ~B + C
+	~B
 imply
-    ~A + C.
+	A.
 The clauses
-    A
+	C + D
 and
-    ~A + C
+	~D
 imply
-    C.
+	C.
 The clauses
-    ~C
+	~A + ~C
 and
-    C
+	C
 imply
-    [].
+	~A.
+The clauses
+	~A
+and
+	A
+imply
+	[].
 But this is the empty clause, a contradiction!
 Our original statement must follow.
-        Q.E.D.
+		Q.E.D.
+THEOREM. The clauses
+	[(A + B) * (C + D),~D,~B]
+DO NOT imply the statement
+	A * D.
+PROOF. It is routine to check that the resolution algorithm ends in saturation. Therefore the statement does not follow. (But it may follow under stronger assumptions!)
+		Q.E.D.
 ```
