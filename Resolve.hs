@@ -30,6 +30,11 @@ clauseToCNF = clausesToCNF . (: [])
 clausesToCNF :: [Term] -> CNF
 clausesToCNF = map flattenDis . splitCons . map cnf
 
+{-| Unfold a DisList into a term. -}
+unfoldDisList :: DisList -> Term
+unfoldDisList [x] = x
+unfoldDisList (x:xs) = Dis x (unfoldDisList xs)
+
 -- Flatten an n-ary disjunction into a list of literals.
 flattenDis :: Term -> [Term]
 flattenDis (Dis x y) = flattenDis x ++ flattenDis y

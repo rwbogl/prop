@@ -4,6 +4,7 @@ module Main where
 import System.Environment
 import Parser
 import Resolve
+import Proof
 import Data.List
 
 isQuery :: Term -> Bool
@@ -36,12 +37,7 @@ handleStatements statements = do
     let (queries, clauses) = partition isQuery statements
         cnfClauses = clausesToCNF clauses
         trueQueries = filter (clausesEntail cnfClauses) queries
-    putStrLn "Clauses:"
-    print cnfClauses
-    putStrLn "Queries:"
-    print queries
-    putStrLn "Queries that follow:"
-    mapM_ print trueQueries
+    mapM_ (clausesEntailProof clauses) queries
 
 main = do
     (path:_) <- getArgs
