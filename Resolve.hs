@@ -67,8 +67,8 @@ data QueueItem = QueueItem { left :: DisList
 
 type Queue = [QueueItem]
 
-{-| Try to prove that a CNF list of clauses is satisfiable. If so, then return
-   the proof as a QueueItem. Otherwise, return Nothing. -}
+{-| Try to prove that a CNF list of clauses is unsatisfiable. If so, then
+   return the proof as a QueueItem. Otherwise, return Nothing. -}
 sat :: CNF -> Maybe QueueItem
 sat clauses = sat' clauses [Empty] []
 
