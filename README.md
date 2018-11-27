@@ -10,7 +10,7 @@ components are weak.)
 
 ## Example
 
-In the file `test.ph`:
+In the file `tests/test.ph`:
 
 ```
 (A + B) * (C + D).
