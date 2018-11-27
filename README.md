@@ -23,7 +23,7 @@ In the file `tests/test.ph`:
 Output:
 
 ```
-$ ./main test.ph
+$ ./main tests/test.ph
 THEOREM. The clauses
 	[(A + B) * (C + D),~D,~B]
 imply the statement
