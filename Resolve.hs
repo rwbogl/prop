@@ -49,11 +49,12 @@ splitCons = foldr (\term acc -> splitCon term ++ acc) []
 {-| Translate a term into conjunctive normal form. -}
 cnf :: Term -> Term
 -- Recursively apply De Morgan's law.
-cnf (Dis (Var a) (x `Con` y)) = left `Con` right
-    where left = cnf $ Dis (Var a) x
-          right = cnf $ Dis (Var a) y
+cnf (Dis left right) =
+    case (left, right) of
+      (x `Con` y, right) -> cnf (x `Dis` right) `Con` cnf (y `Dis` right)
+      (left, x `Con` y) -> cnf (x `Dis` left) `Con` cnf (y `Dis` left)
+      _ -> Dis left right
 -- Swap argument order to fall into first case.
-cnf (Dis (x `Con` y) (Var a)) = cnf $ Dis (Var a) (x `Con` y)
 cnf (Query t) = Query $ cnf t
 cnf oth = oth
 
