@@ -36,7 +36,6 @@ handleStatements :: [Term] -> IO ()
 handleStatements statements = do
     let (queries, clauses) = partition isQuery statements
         cnfClauses = clausesToCNF clauses
-        trueQueries = filter (clausesEntail cnfClauses) queries
     mapM_ (clausesEntailProof clauses) queries
 
 main = do
