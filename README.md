@@ -66,6 +66,8 @@ THEOREM. The clauses
 	[(A + B) * (C + D),~D,~B]
 DO NOT imply the statement
 	A * D.
-PROOF. It is routine to check that the resolution algorithm ends in saturation. Therefore the statement does not follow. (But it may follow under stronger assumptions!)
+PROOF. It is routine to check that the resolution algorithm ends in saturation.
+Therefore the statement does not follow.
+(But it may follow under stronger assumptions!)
 		Q.E.D.
 ```
