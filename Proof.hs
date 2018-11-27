@@ -2,14 +2,6 @@ module Proof where
 import Parser
 import Resolve
 
-{-|
-    To fix:
-        1. Proofs are being printed in reverse. That's a Bad Thing.
-        2. In the beginning, we print out a CNF list and trust people to
-           understand that the commas mean conjunction. Later, we print
-           DisList's with the opposite meaning! This is confusing.
--}
-
 clausesEntailProof :: [Term] -> Term -> IO ()
 clausesEntailProof clauses (Query x) = do
     let cnfClauses = clausesToCNF clauses
