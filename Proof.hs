@@ -59,7 +59,7 @@ printFailure clauses query = do
     putStrLn "DO NOT imply the statement"
     putStrLn $ "\t" ++ show query ++ "."
     putStr "PROOF. It is routine to check that the resolution algorithm ends "
-    putStr "in saturation. Therefore the statement does not follow. "
+    putStrLn "in saturation.\nTherefore the statement does not follow."
     putStrLn "(But it may follow under stronger assumptions!)"
     putStrLn "\t\tQ.E.D."
 
