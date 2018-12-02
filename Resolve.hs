@@ -4,7 +4,7 @@ module Resolve
     , clauseToCNF
     , sat
     , Queue
-    , QueueItem(..)
+    , QueueItem(left, right, res)
     , cnf
     , neg
     , unfoldDisList
