@@ -1,4 +1,8 @@
-module Parser where
+module Parser
+    ( Term(..)
+    , ThrowsError
+    , parseInput
+    ) where
 
 import qualified Text.Parsec.Token as Token
 import Text.Parsec.Expr

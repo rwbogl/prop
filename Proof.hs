@@ -1,4 +1,7 @@
-module Proof where
+module Proof
+    ( clausesEntailProof
+    ) where
+
 import Parser
 import Resolve
 

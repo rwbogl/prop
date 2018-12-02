@@ -1,4 +1,13 @@
-module Resolve where
+module Resolve
+    ( clausesEntail
+    , clausesToCNF
+    , clauseToCNF
+    , sat
+    , QueueItem(..)
+    , cnf
+    , neg
+    , unfoldDisList
+    ) where
 
 import Parser
 import Data.List
