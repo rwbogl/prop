@@ -1,4 +1,4 @@
-# proph
+# prop
 
 A simple resolution-based theorem prover for propositional logic in Haskell.
 
@@ -24,7 +24,7 @@ This argument is a special case of this more general rule:
 (A -> P) * (B -> Q) * (A + B) -> P + Q
 ```
 
-Let's ask `proph` to prove this for us. In the file `tests/em.ph` is an
+Let's ask `prop` to prove this for us. In the file `tests/em.ph` is an
 equivalent form:
 
 ```

@@ -67,10 +67,10 @@ reservedOp = Token.reservedOp lexer
 whitespace = Token.whiteSpace lexer
 parens = Token.parens lexer
 
-prophParse = whitespace >> declarations
+propParse = whitespace >> declarations
 
 declarations = endBy1 expr (char '.' >> whitespace) <?> "declaration"
 
 {-| Parse a file into a list of terms. -}
 parseInput :: String -> ThrowsError [Term]
-parseInput = parse prophParse ""
+parseInput = parse propParse ""
