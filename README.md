@@ -9,9 +9,9 @@ Hours](https://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours), but
 it got boring. (Because of this starting point, much of the parsing components
 are weak.)
 
-Resolution is a simple logical inference rule. It merely states that, given `A
-+ B` and `~A + C`, you can conclude `B + C`, where `+` denotes "logical or" and
-`*` denotes "logical and." In other words, you can *resolve out* complementary
+Resolution is a simple logical inference rule. It merely states that, given `A + B`
+and `~A + C`, you can conclude `B + C`, where `+` denotes "logical or" and `*`
+denotes "logical and." In other words, you can *resolve out* complementary
 variables.
 
 The rule is pretty straightforward to prove, requiring only the law of the
