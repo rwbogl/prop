@@ -87,6 +87,9 @@ resolve any further, then the statement does not follow from your clauses. This
 procedure is *complete* (it will always find an answer) and *sound* (that
 answer is always correct).
 
+In the current implementation, the program actually finds the *shortest*
+possible proof by contradiction.
+
 ## Another example
 
 In the file `tests/test.ph`:
