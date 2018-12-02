@@ -3,10 +3,12 @@ module Resolve
     , clausesToCNF
     , clauseToCNF
     , sat
+    , Queue
     , QueueItem(..)
     , cnf
     , neg
     , unfoldDisList
+    , queueToList
     ) where
 
 import Parser
@@ -77,10 +79,18 @@ data QueueItem = QueueItem { left :: DisList
 
 type Queue = [QueueItem]
 
+{-| Unwrap a QueueItem via its previous pointers into a Queue.
+-}
+queueToList :: QueueItem -> Queue
+queueToList head = build head []
+    where build Empty acc = acc
+          build head acc = build (prev head) (head : acc)
+
 {-| Try to prove that a CNF list of clauses is unsatisfiable. If so, then
    return the proof as a QueueItem. Otherwise, return Nothing. -}
-sat :: CNF -> Maybe QueueItem
-sat clauses = sat' clauses [Empty] []
+sat :: CNF -> Maybe Queue
+sat clauses =
+    sat' clauses [Empty] [] >>= return . queueToList
 
 {- Resolution algorithm:
     1. If possible, choose any two clauses with complementary literals. If
