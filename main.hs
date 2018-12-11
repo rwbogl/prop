@@ -28,6 +28,14 @@ isQuery _ = False
 
         4. Implement a REPL.
 
+        5. Improve the data structure design. I have plans to implement a few
+        different proof algorithms, and the current design is awful. There are
+        `DisList`s and `CNF`s floating around everywhere.
+
+        I think that some of this could be cleared up by using `newtype` rather
+        than `type` to define the `DisList` and `CNF` types, but I might have
+        to experiment a bit and find out.
+
     Done:
 
         1. Improved parser and error handling.
