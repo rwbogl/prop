@@ -1,6 +1,5 @@
 module Parser
-    ( Term(..)
-    , ThrowsError
+    ( ThrowsError
     , parseInput
     ) where
 
@@ -10,6 +9,7 @@ import Text.Parsec.Language
 import Text.Parsec
 import Data.List
 import Control.Monad.Except
+import Logic
 
 type ThrowsError = Either ParseError
 
@@ -21,28 +21,6 @@ type ThrowsError = Either ParseError
         need to actually understand how to use Parsec.
 
 -}
-
-data Term = Var String
-          | Dis Term Term
-          | Con Term Term
-          | Neg Term
-          | Query Term
-          deriving Eq
-
-instance Show Term where show = showTerm
-
-showTerm (Var s) = s
-showTerm (Dis x y) = wrapComplex x ++ " + " ++ wrapComplex y
-showTerm (Con x y) = wrapComplex x ++ " * " ++ wrapComplex y
-showTerm (Neg x) = "~" ++ wrapComplex x
-showTerm (Query x) = "?" ++ wrapComplex x
-
-wrapComplex :: Term -> String
-wrapComplex (Var x) = x
--- We don't need to wrap negations in parenthesis if they're binding to a
--- variable. Thus, just show it if that's the case.
-wrapComplex exp@(Neg (Var s)) = show exp
-wrapComplex other = "(" ++ show other ++ ")"
 
 def = emptyDef { Token.commentStart = "/*"
                , Token.commentEnd = "*/"

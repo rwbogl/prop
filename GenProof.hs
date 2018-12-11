@@ -4,7 +4,8 @@ module GenProof
 
 import Parser
 import Resolve
-import Data.Text
+import qualified Data.Text
+import Logic
 
 clausesEntailProof :: [Term] -> Term -> IO ()
 clausesEntailProof clauses (Query x) = do
@@ -15,7 +16,7 @@ clausesEntailProof clauses (Query x) = do
       Just tail -> printProof clauses x tail
       Nothing -> printFailure clauses x
 
-printProof :: [Term] -> Term -> Queue -> IO ()
+printProof :: [Term] -> Term -> Proof -> IO ()
 printProof clauses query proof = do
     putStrLn "THEOREM. The clauses"
     putStrLn $ "\t" ++ show clauses
@@ -29,7 +30,7 @@ printProof clauses query proof = do
     putStrLn "Then we may reason as follows."
     printProof' proof
 
-printProof' :: Queue -> IO ()
+printProof' :: Proof -> IO ()
 printProof' [] = do
     putStrLn "But this is the empty clause, a contradiction!"
     putStrLn "Our original statement must follow."

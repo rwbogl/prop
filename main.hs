@@ -4,7 +4,8 @@ module Main where
 import System.Environment
 import Parser
 import Resolve
-import Proof
+import GenProof
+import Logic
 import Data.List
 
 isQuery :: Term -> Bool
