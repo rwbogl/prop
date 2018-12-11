@@ -1,9 +1,10 @@
-module Proof
+module GenProof
     ( clausesEntailProof
     ) where
 
 import Parser
 import Resolve
+import Data.Text
 
 clausesEntailProof :: [Term] -> Term -> IO ()
 clausesEntailProof clauses (Query x) = do
