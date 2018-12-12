@@ -2,45 +2,38 @@ module Resolve
     ( clausesEntail
     , sat
     , Proof
-    , ProofStep
-    , QueueItem(left, right, res)
+    , ProofStep(left, right, res)
     ) where
 
-import Parser
 import Data.List
 import Data.Maybe
 import Logic
+import Queue
 
-type Proof = Queue
-type ProofStep = QueueItem
+data ProofStep = ProofStep { left :: DisList
+                           , right :: DisList
+                           , res :: DisList
+                           , prev :: ProofStep
+                           }
+               | Start
+
+type Proof = [ProofStep]
+
+makeProof :: ProofStep -> Proof
+makeProof Start = []
+makeProof step = step : makeProof (prev step)
 
 {-| Check if a CNF list of clauses entail a query. -}
 clausesEntail :: CNF -> Term -> Bool
 clausesEntail clauses (Query x) = isJust . sat $ negated ++ clauses
     where negated = clauseToCNF $ neg x
 
-data QueueItem = QueueItem { left :: DisList
-                           , right :: DisList
-                           , res :: DisList
-                           , prev :: QueueItem
-                           }
-               | Empty
-               deriving Show
-
-type Queue = [QueueItem]
-
-{-| Unwrap a QueueItem via its previous pointers into a Queue.
--}
-queueToList :: QueueItem -> Queue
-queueToList head = build head []
-    where build Empty acc = acc
-          build head acc = build (prev head) (head : acc)
-
 {-| Try to prove that a CNF list of clauses is unsatisfiable. If so, then
-   return the proof as a QueueItem. Otherwise, return Nothing. -}
-sat :: CNF -> Maybe Queue
-sat clauses =
-    sat' clauses [Empty] [] >>= return . queueToList
+   return the proof as a ProofStep. Otherwise, return Nothing. -}
+sat :: CNF -> Maybe Proof
+sat clauses = sat' clauses queue [] >>= return . makeProof
+    where initialOptions = findResolvants clauses
+          queue = fromList $ packResolvants initialOptions Start
 
 {- Resolution algorithm:
     1. If possible, choose any two clauses with complementary literals. If
@@ -50,25 +43,26 @@ sat clauses =
     4. If it's not empty, then go back to step 1.
 -}
 
-sat' :: CNF -> Queue -> [(DisList, DisList)] -> Maybe QueueItem
-sat' init [] _ = Nothing
-sat' init (Empty:rest) _ = sat' init (packResolvants (findResolvants init) Empty) []
-sat' init (head:rest) seen
-  | null $ res head = Just head -- Derived the empty clause.
-  | otherwise = sat' init queue seen' -- Add to the queue and move on.
-  where seen' = (right head, left head):(left head, right head):seen
-        newQueries = res head : path head
-        neighbors = findResolvants (init ++ newQueries)
+sat' :: CNF -> Queue ProofStep -> [(DisList, DisList)] -> Maybe ProofStep
+sat' init queue seen
+  | empty queue = Nothing -- Nothing left to resolve.
+  | null (res current) = Just current -- Derived the empty clause.
+  | otherwise = sat' init queue' seen'
+  where Just (current, rest) = dequeue queue
+        seen' = (left current, right current):(right current, left current):seen
+        -- Add the current resolvant along with every clause derived on this
+        -- path.
+        currentClauses = res current : path current
+        neighbors = findResolvants (init ++ currentClauses)
         newNeighbors = filter ((`notElem` seen) . fst) neighbors
-        enqueue = packResolvants newNeighbors head
-        queue = rest ++ enqueue
+        queue' = enqueue (packResolvants newNeighbors current) rest
 
-path :: QueueItem -> [DisList]
-path Empty = []
+path :: ProofStep -> [DisList]
+path Start = []
 path item = res item : path (prev item)
 
-packResolvants :: [((DisList, DisList), [DisList])] -> QueueItem -> [QueueItem]
-packResolvants xs prev = concat [[QueueItem x y r prev | r <- rs] | ((x, y), rs) <- xs]
+packResolvants :: [((DisList, DisList), [DisList])] -> ProofStep -> [ProofStep]
+packResolvants xs prev = concat [[ProofStep x y r prev | r <- rs] | ((x, y), rs) <- xs]
 
 findResolvants :: CNF -> [((DisList, DisList), [DisList])]
 findResolvants clauses = [((x, y), fullResolve x y) | x <- clauses, y <- clauses]
