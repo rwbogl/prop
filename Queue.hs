@@ -37,14 +37,11 @@ empty :: Queue a -> Bool
 empty (Queue q) = null q
 
 enqueue :: [a] -> Queue a -> Queue a
-enqueue xs (Queue q) = Queue (xs ++ q)
+enqueue xs (Queue q) = Queue (q ++ xs)
 
 enqueueSingle :: a -> Queue a -> Queue a
-enqueueSingle x (Queue q) = Queue (x:q)
+enqueueSingle x = enqueue [x]
 
 dequeue :: Queue a -> Maybe (a, Queue a)
-dequeue (Queue q)
-  | null q = Nothing
-  | otherwise = Just (lastElem, Queue rest)
-  where (rest, last) = splitAt (length q - 1) q
-        lastElem = head last
+dequeue (Queue []) = Nothing
+dequeue (Queue (x:xs)) = Just (x, Queue xs)
