@@ -20,8 +20,9 @@ data ProofStep = ProofStep { left :: DisList
 type Proof = [ProofStep]
 
 makeProof :: ProofStep -> Proof
-makeProof Start = []
-makeProof step = step : makeProof (prev step)
+makeProof = reverse . makeProof'
+    where makeProof' Start = []
+          makeProof' step = step : makeProof' (prev step)
 
 {-| Check if a CNF list of clauses entail a query. -}
 clausesEntail :: CNF -> Term -> Bool
