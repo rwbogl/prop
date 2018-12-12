@@ -19,6 +19,7 @@ data ProofStep = ProofStep { left :: DisList
 
 type Proof = [ProofStep]
 
+-- Unfold a ProofStep into a Proof by following its parents.
 makeProof :: ProofStep -> Proof
 makeProof = reverse . makeProof'
     where makeProof' Start = []
@@ -58,13 +59,19 @@ sat' init queue seen
         newNeighbors = filter ((`notElem` seen) . fst) neighbors
         queue' = enqueue (packResolvants newNeighbors current) rest
 
+-- Return a list of the resolvants added by following (in reverse) the given
+-- steps.
 path :: ProofStep -> [DisList]
 path Start = []
 path item = res item : path (prev item)
 
+-- Given the list of resolvant pairs from findResolvants and the previous proof
+-- step, pack these into a list of ProofSteps with appropriate parents.
 packResolvants :: [((DisList, DisList), [DisList])] -> ProofStep -> [ProofStep]
 packResolvants xs prev = concat [[ProofStep x y r prev | r <- rs] | ((x, y), rs) <- xs]
 
+-- Find all possible resolvants in a CNF list as ((left, right), resolvant)
+-- tuples.
 findResolvants :: CNF -> [((DisList, DisList), [DisList])]
 findResolvants clauses = [((x, y), fullResolve x y) | x <- clauses, y <- clauses]
 
