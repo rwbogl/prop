@@ -29,7 +29,6 @@ isQuery _ = False
 handleStatements :: [Term] -> IO ()
 handleStatements statements = do
     let (queries, clauses) = partition isQuery statements
-        cnfClauses = clausesToCNF clauses
     mapM_ (clausesEntailProof clauses) queries
 
 main = do
