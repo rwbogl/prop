@@ -21,6 +21,8 @@ unitTests = testGroup "Unit tests"
 
 a = Var "A"
 b = Var "B"
+p = Var "P"
+q = Var "Q"
 
 consistentCNF =
     [ [a]
@@ -34,15 +36,9 @@ inconsistentCNF =
     ]
 
 bootstrapClauses =
-    [ [ Neg (Var "A")
-      , Var "P"
-      ]
-    , [ Neg (Var "B")
-      , Var "Q"
-      ]
-    , [ Var "A"
-      , Var "B"
-      ]
+    [ [Neg a, p]
+    , [Neg b, q]
+    , [a, b]
     ]
 
 bootstrapQuery = Query (Dis (Var "P") (Var "Q"))
