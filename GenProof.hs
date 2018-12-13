@@ -6,6 +6,7 @@ import Parser
 import Resolve
 import qualified Data.Text
 import Logic
+import qualified Data.Set as Set
 
 clausesEntailProof :: [Term] -> Term -> IO ()
 clausesEntailProof clauses (Query x) = do
@@ -37,9 +38,7 @@ printProof' [] = do
     putStrLn "\t\tQ.E.D."
 printProof' (head:tail) = do
     putStrLn "The clauses"
-    putStrLn $ "\t" ++ show (unfoldDisList $ left head)
-    putStrLn "and"
-    putStrLn $ "\t" ++ show (unfoldDisList $ right head)
+    putStrLn $ "\t" ++ show (map unfoldDisList $ Set.toList $ parents head)
     putStrLn "imply"
     putStrLn $ "\t" ++
         case res head of

@@ -3,22 +3,23 @@ module Resolve
     , satisfiable
     , sat
     , Proof
-    , ProofStep(left, right, res)
+    , ProofStep(parents, res)
     ) where
 
 import Data.List
 import Data.Maybe
 import Logic
 import Queue
+import qualified Data.Set as Set
 
-data ProofStep = ProofStep { left :: DisList
-                           , right :: DisList
+data ProofStep = ProofStep { parents :: ClauseSet
                            , res :: DisList
                            , prev :: ProofStep
                            }
                | Start
 
 type Proof = [ProofStep]
+type ClauseSet = Set.Set DisList
 
 -- Unfold a ProofStep into a Proof by following its parents.
 makeProof :: ProofStep -> Proof
@@ -35,9 +36,9 @@ satisfiable :: CNF -> Bool
 satisfiable = isNothing . sat
 
 {-| Try to prove that a CNF list of clauses is unsatisfiable. If so, then
-   return the proof as a ProofStep. Otherwise, return Nothing. -}
+   return the proof as a Proof. Otherwise, return Nothing. -}
 sat :: CNF -> Maybe Proof
-sat clauses = sat' clauses queue [] >>= return . makeProof
+sat clauses = sat' clauses queue Set.empty >>= return . makeProof
     where initialOptions = findResolvants clauses
           queue = fromList $ packResolvants initialOptions Start
 
@@ -49,18 +50,18 @@ sat clauses = sat' clauses queue [] >>= return . makeProof
     4. If it's not empty, then go back to step 1.
 -}
 
-sat' :: CNF -> Queue ProofStep -> [(DisList, DisList)] -> Maybe ProofStep
+sat' :: CNF -> Queue ProofStep -> Set.Set ClauseSet -> Maybe ProofStep
 sat' init queue seen
   | empty queue = Nothing -- Nothing left to resolve.
   | null (res current) = Just current -- Derived the empty clause.
   | otherwise = sat' init queue' seen'
   where Just (current, rest) = dequeue queue
-        seen' = (left current, right current):(right current, left current):seen
+        seen' = Set.insert (parents current) seen
         -- Add the current resolvant along with every clause derived on this
         -- path.
         currentClauses = res current : path current
         neighbors = findResolvants (init ++ currentClauses)
-        newNeighbors = filter ((`notElem` seen) . fst) neighbors
+        newNeighbors = filter (\(parents, _) -> not $ Set.member parents seen') neighbors
         queue' = enqueue (packResolvants newNeighbors current) rest
 
 -- Return a list of the resolvants added by following (in reverse) the given
@@ -71,13 +72,13 @@ path item = res item : path (prev item)
 
 -- Given the list of resolvant pairs from findResolvants and the previous proof
 -- step, pack these into a list of ProofSteps with appropriate parents.
-packResolvants :: [((DisList, DisList), [DisList])] -> ProofStep -> [ProofStep]
-packResolvants xs prev = concat [[ProofStep x y r prev | r <- rs] | ((x, y), rs) <- xs]
+packResolvants :: [(ClauseSet, [DisList])] -> ProofStep -> [ProofStep]
+packResolvants xs prev = concat [[ProofStep set r prev | r <- rs] | (set, rs) <- xs]
 
 -- Find all possible resolvants in a CNF list as ((left, right), resolvant)
 -- tuples.
-findResolvants :: CNF -> [((DisList, DisList), [DisList])]
-findResolvants clauses = [((x, y), fullResolve x y) | x <- clauses, y <- clauses]
+findResolvants :: CNF -> [(ClauseSet, [DisList])]
+findResolvants clauses = [(Set.fromList [x, y], fullResolve x y) | x <- clauses, y <- clauses]
 
 {-| Fully resolve two CNF terms. That is, return a list of all possible
    resolvants. -}

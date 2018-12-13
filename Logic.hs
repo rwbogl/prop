@@ -14,7 +14,7 @@ data Term = Var String
           | Con Term Term
           | Neg Term
           | Query Term
-          deriving Eq
+          deriving (Eq, Ord)
 
 instance Show Term where show = showTerm
 
