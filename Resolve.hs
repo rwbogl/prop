@@ -1,6 +1,7 @@
 module Resolve
     ( clausesEntail
     , satisfiable
+    , sat
     , Proof
     , ProofStep(left, right, res)
     ) where
