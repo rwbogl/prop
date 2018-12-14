@@ -24,7 +24,7 @@ This argument is a special case of this more general rule:
 (A -> P) * (B -> Q) * (A + B) -> P + Q
 ```
 
-Let's ask `prop` to prove this for us. In the file `tests/em.prop` is an
+Let's ask `prop` to prove this for us. In the file `tests/resolution.prop` is an
 equivalent form:
 
 ```
@@ -37,7 +37,7 @@ A + B.
 Output:
 
 ```
-$ prop tests/em.prop
+$ prop tests/resolution.prop
 THEOREM. The clauses
 	[~A + P,~B + Q,A + B]
 imply the statement
