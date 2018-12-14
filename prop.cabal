@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dfaac99f7312fe74f5fb28da999c4339bf381777b62a7c0fee28aa9b8cb72bfc
+-- hash: 3563b13e6becad3eb3f86c148b5282570167d6c3efd7da6cc6f24fa8cfca6c5a
 
 name:           prop
 version:        0.1.0.0
@@ -44,7 +44,7 @@ library
     , text
   default-language: Haskell2010
 
-executable prop-exe
+executable prop
   main-is: main.hs
   other-modules:
       GenProof
