@@ -3,11 +3,11 @@
 A simple resolution-based theorem prover for propositional logic in Haskell.
 
 I started writing this small program to learn more about resolution-based
-theorem proving and Haskell. I *initially* started working through [Write
-Yourself a Scheme in 48
+theorem proving and Haskell. I begin this project after [Write Yourself
+a Scheme in 48
 Hours](https://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours), but
-it got boring. (Because of this starting point, much of the parsing components
-are weak.)
+became boring. (Because of how I started, the parsing in `prop` is a little
+weak.)
 
 Resolution is a simple logical inference rule. It merely states that, given `A + B`
 and `~A + C`, you can conclude `B + C`, where `+` denotes "logical or" and `*`
@@ -15,8 +15,8 @@ denotes "logical and." In other words, you can *resolve out* complementary
 variables.
 
 The rule is pretty straightforward to prove, requiring only the law of the
-excluded middle and De Morgan's laws. If `A`, then `~A` is false, so `C`. If
-`~A`, then `A` is false, so `B`. Therefore `B + C`.
+excluded middle. If `A`, then `~A` is false, so `C`. If `~A`, then `A` is
+false, so `B`. Therefore `B + C`.
 
 This argument is a special case of this more general rule:
 
@@ -37,7 +37,7 @@ A + B.
 Output:
 
 ```
-$ ./main tests/em.ph
+$ prop tests/em.ph
 THEOREM. The clauses
 	[~A + P,~B + Q,A + B]
 imply the statement
