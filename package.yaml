@@ -31,7 +31,7 @@ library:
   source-dirs: src
 
 executables:
-  prop-exe:
+  prop:
     main:                main.hs
     source-dirs:         src
     ghc-options:
