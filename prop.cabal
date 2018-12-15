@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3563b13e6becad3eb3f86c148b5282570167d6c3efd7da6cc6f24fa8cfca6c5a
+-- hash: 702bc677ef865637dac9263b81d946f8b51c717a5ebfc305ce768e1ee595fb14
 
 name:           prop
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       Paths_prop
   hs-source-dirs:
       src
+  ghc-options: -Wall
   build-depends:
       base >=4.7 && <5
     , containers
@@ -55,7 +56,7 @@ executable prop
       Paths_prop
   hs-source-dirs:
       src
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers
@@ -74,7 +75,7 @@ test-suite prop-test
       Paths_prop
   hs-source-dirs:
       tests
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers

@@ -24,6 +24,7 @@ instance Show Term where show = showTerm
 type DisList = [Term]
 type CNF = [DisList]
 
+showTerm :: Term -> String
 showTerm (Var s) = s
 showTerm (Dis x y) = wrapComplex x ++ " + " ++ wrapComplex y
 showTerm (Con x y) = wrapComplex x ++ " * " ++ wrapComplex y
@@ -35,11 +36,8 @@ wrapComplex :: Term -> String
 wrapComplex (Var x) = x
 -- We don't need to wrap negations in parenthesis if they're binding to a
 -- variable. Thus, just show it if that's the case.
-wrapComplex exp@(Neg (Var s)) = show exp
+wrapComplex exp@(Neg (Var _)) = show exp
 wrapComplex other = "(" ++ show other ++ ")"
-
-showDisList :: DisList -> String
-showDisList = show . unfoldDisList
 
 -- Negate a term.
 neg :: Term -> Term
