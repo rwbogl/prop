@@ -39,7 +39,7 @@ Output:
 ```
 $ prop tests/resolution.prop
 THEOREM. The clauses
-	[~A + P,~B + Q,A + B]
+	[A -> P,B -> Q,A + B]
 imply the statement
 	P + Q.
 PROOF. Translate everything into conjunctive normal form:
@@ -49,27 +49,19 @@ Assume, for the sake of contradiction,
 	~P * ~Q.
 Then we may reason as follows.
 The clauses
-	~A + P
-and
-	A + B
+	[A + B,~A + P]
 imply
 	P + B.
 The clauses
-	~B + Q
-and
-	~Q
+	[~B + Q,~Q]
 imply
 	~B.
 The clauses
-	~P
-and
-	P + B
+	[P + B,~P]
 imply
 	B.
 The clauses
-	B
-and
-	~B
+	[B,~B]
 imply
 	[].
 But this is the empty clause, a contradiction!
