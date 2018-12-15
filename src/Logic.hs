@@ -12,6 +12,7 @@ module Logic
 data Term = Var String
           | Dis Term Term
           | Con Term Term
+          | Impl Term Term
           | Neg Term
           | Query Term
           deriving (Eq, Ord)
@@ -27,6 +28,7 @@ showTerm (Var s) = s
 showTerm (Dis x y) = wrapComplex x ++ " + " ++ wrapComplex y
 showTerm (Con x y) = wrapComplex x ++ " * " ++ wrapComplex y
 showTerm (Neg x) = "~" ++ wrapComplex x
+showTerm (Impl x y) = wrapComplex x ++ " -> " ++ wrapComplex y
 showTerm (Query x) = "?" ++ wrapComplex x
 
 wrapComplex :: Term -> String
@@ -45,6 +47,7 @@ neg (Var a) = Neg (Var a)
 neg (Dis x y) = Con (neg x) (neg y)
 neg (Con x y) = Dis (neg x) (neg y)
 neg (Query x) = Query $ neg x
+neg (Impl x y) = Con x (neg y)
 neg (Neg t) = t
 
 {-| Unfold a DisList into a term. -}
@@ -72,6 +75,7 @@ cnf (Dis left right) =
       (left, x `Con` y) -> cnf (x `Dis` left) `Con` cnf (y `Dis` left)
       _ -> Dis left right
 -- Swap argument order to fall into first case.
+cnf (Impl x y) = cnf $ Dis (neg x) y
 cnf (Query t) = Query $ cnf t
 cnf oth = oth
 

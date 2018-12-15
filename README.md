@@ -28,8 +28,8 @@ Let's ask `prop` to prove this for us. In the file `tests/resolution.prop` is an
 equivalent form:
 
 ```
-~A + P.
-~B + Q.
+A -> P.
+B -> Q.
 A + B.
 ? P + Q.
 ```

@@ -17,7 +17,7 @@ def = emptyDef { Token.commentStart = "/*"
                , Token.commentEnd = "*/"
                , Token.identStart = letter
                , Token.identLetter = alphaNum
-               , Token.reservedOpNames = ["+", "~", "*"]
+               , Token.reservedOpNames = ["+", "~", "*", "+", "->"]
                }
 
 expr = buildExpressionParser table term
@@ -25,6 +25,7 @@ expr = buildExpressionParser table term
 table = [ [Prefix (reservedOp "~" >> return Neg)]
         , [Infix (reservedOp "*" >> return Con) AssocRight]
         , [Infix (reservedOp "+" >> return Dis) AssocRight]
+        , [Infix (reservedOp "->" >> return Impl) AssocRight]
         , [Prefix (reservedOp "?" >> return Query)]
         ]
 
