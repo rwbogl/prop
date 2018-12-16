@@ -7,10 +7,10 @@ main = defaultMain unitTests
 
 unitTests = testGroup "Unit tests"
     [ testCase "Consistent clauses are satisfiable" $
-        satisfiable consistentCNF @?= True
+        satisfiable consistentClauses @?= True
 
     , testCase "Inconsistent clauses are unsatisfiable" $
-          satisfiable inconsistentCNF @?= False
+          satisfiable inconsistentClauses @?= False
 
     , testCase "Can prove resolution rule" $
         clausesEntail bootstrapClauses bootstrapQuery @?= True
@@ -28,27 +28,16 @@ p = Var "P"
 q = Var "Q"
 r = Var "R"
 
-consistentCNF =
-    [ [a]
-    , [b]
-    , [Neg (Dis (Neg a) (Neg b))]
-    ]
+consistentClauses = [a, b, Neg $ Dis (Neg a) (Neg b)]
 
-inconsistentCNF =
-    [ [Neg a]
-    , [a]
-    ]
+inconsistentClauses = [Neg a, a]
 
-bootstrapClauses =
-    [ [Neg a, p]
-    , [Neg b, q]
-    , [a, b]
-    ]
+bootstrapClauses = [Dis (Neg a) p, Dis (Neg b) q, Dis a b]
 
 bootstrapQuery = Query (Dis (Var "P") (Var "Q"))
 
-weakClauses = [[Dis a b]]
+weakClauses = [Dis a b]
 strongQuery = Query a
 
-fregeClauses = clauseToCNF $ Impl p (Impl q r)
+fregeClauses = [Impl p (Impl q r)]
 fregeQuery = Query $ Impl (Impl p q) (Impl p r)

@@ -1,6 +1,8 @@
 module Resolve
     ( clausesEntail
+    , clausesEntailCNF
     , satisfiable
+    , satisfiableCNF
     , sat
     , Proof
     , ProofStep(parents, res)
@@ -27,13 +29,19 @@ makeProof = reverse . makeProof'
     where makeProof' Start = []
           makeProof' step = step : makeProof' (prev step)
 
+clausesEntail :: [Term] -> Term -> Bool
+clausesEntail clauses = clausesEntailCNF (clausesToCNF clauses)
+
 {-| Check if a CNF list of clauses entail a query. -}
-clausesEntail :: CNF -> Term -> Bool
-clausesEntail clauses (Query x) = isJust . sat $ negated ++ clauses
+clausesEntailCNF :: CNF -> Term -> Bool
+clausesEntailCNF clauses (Query x) = isJust . sat $ negated ++ clauses
     where negated = clauseToCNF $ neg x
 
-satisfiable :: CNF -> Bool
-satisfiable = isNothing . sat
+satisfiable :: [Term] -> Bool
+satisfiable = satisfiableCNF . clausesToCNF
+
+satisfiableCNF :: CNF -> Bool
+satisfiableCNF = isNothing . sat
 
 {-| Try to prove that a CNF list of clauses is unsatisfiable. If so, then
    return the proof as a Proof. Otherwise, return Nothing. -}
