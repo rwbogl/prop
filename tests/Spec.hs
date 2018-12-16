@@ -17,12 +17,16 @@ unitTests = testGroup "Unit tests"
 
     , testCase "Clauses do not entail query when impossible" $
           clausesEntail weakClauses strongQuery @?= False
+
+    , testCase "Can prove Frege's theorem" $
+        clausesEntail fregeClauses fregeQuery @?= True
     ]
 
 a = Var "A"
 b = Var "B"
 p = Var "P"
 q = Var "Q"
+r = Var "R"
 
 consistentCNF =
     [ [a]
@@ -45,3 +49,6 @@ bootstrapQuery = Query (Dis (Var "P") (Var "Q"))
 
 weakClauses = [[Dis a b]]
 strongQuery = Query a
+
+fregeClauses = clauseToCNF $ Impl p (Impl q r)
+fregeQuery = Query $ Impl (Impl p q) (Impl p r)
