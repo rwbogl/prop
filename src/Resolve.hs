@@ -60,16 +60,16 @@ sat clauses = sat' clauses queue Set.empty >>= return . makeProof
 -}
 
 sat' :: CNF -> Queue ProofStep -> Set.Set ClauseSet -> Maybe ProofStep
-sat' init queue seen
+sat' baseClauses queue seen
   | empty queue = Nothing -- Nothing left to resolve.
   | null (res current) = Just current -- Derived the empty clause.
-  | otherwise = sat' init queue' seen'
+  | otherwise = sat' baseClauses queue' seen'
   where Just (current, rest) = dequeue queue
         seen' = Set.insert (parents current) seen
         -- Add the current resolvant along with every clause derived on this
         -- path.
         currentClauses = res current : path current
-        neighbors = findResolvants (init ++ currentClauses)
+        neighbors = findResolvants (baseClauses ++ currentClauses)
         newNeighbors = filter (\(parents, _) -> not $ Set.member parents seen') neighbors
         queue' = enqueue (packResolvants newNeighbors current) rest
 
