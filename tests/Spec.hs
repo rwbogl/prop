@@ -12,14 +12,17 @@ unitTests = testGroup "Unit tests"
     , testCase "Inconsistent clauses are unsatisfiable" $
           satisfiable inconsistentClauses @?= False
 
-    , testCase "Can prove resolution rule" $
-        clausesEntail bootstrapClauses bootstrapQuery @?= True
-
     , testCase "Clauses do not entail query when impossible" $
           clausesEntail weakClauses strongQuery @?= False
 
-    , testCase "Can prove Frege's theorem" $
+    , testCase "Resolution rule" $
+        clausesEntail bootstrapClauses bootstrapQuery @?= True
+
+    , testCase "Frege's theorem" $
         clausesEntail fregeClauses fregeQuery @?= True
+
+    , testCase "Peirce's theorem" $
+        clausesEntail peirceClauses peirceQuery @?= True
     ]
 
 a = Var "A"
@@ -41,3 +44,6 @@ strongQuery = Query a
 
 fregeClauses = [Impl p (Impl q r)]
 fregeQuery = Query $ Impl (Impl p q) (Impl p r)
+
+peirceClauses = [Impl (Impl a b) a]
+peirceQuery = Query a
