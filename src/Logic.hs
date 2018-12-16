@@ -50,6 +50,7 @@ neg (Neg t) = t
 
 {-| Unfold a DisList into a term. -}
 unfoldDisList :: DisList -> Term
+unfoldDisList [] = error "Cannot unfold an empty disjunction list"
 unfoldDisList [x] = x
 unfoldDisList (x:xs) = Dis x (unfoldDisList xs)
 

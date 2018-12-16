@@ -36,6 +36,7 @@ clausesEntail clauses = clausesEntailCNF (clausesToCNF clauses)
 clausesEntailCNF :: CNF -> Term -> Bool
 clausesEntailCNF clauses (Query x) = isJust . sat $ negated ++ clauses
     where negated = clauseToCNF $ neg x
+clausesEntailCNF _ _ = error "Second argument must be a query"
 
 satisfiable :: [Term] -> Bool
 satisfiable = satisfiableCNF . clausesToCNF
