@@ -36,7 +36,7 @@ wrapComplex :: Term -> String
 wrapComplex (Var x) = x
 -- We don't need to wrap negations in parenthesis if they're binding to a
 -- variable. Thus, just show it if that's the case.
-wrapComplex exp@(Neg (Var _)) = show exp
+wrapComplex term@(Neg (Var _)) = show term
 wrapComplex other = "(" ++ show other ++ ")"
 
 -- Negate a term.
