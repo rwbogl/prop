@@ -46,7 +46,7 @@ executables:
 
 tests:
   prop-test:
-    main:                Spec.hs
+    main:                tests.hs
     source-dirs:         tests
     ghc-options:
     - -threaded

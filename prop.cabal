@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 702bc677ef865637dac9263b81d946f8b51c717a5ebfc305ce768e1ee595fb14
+-- hash: 8e085d5224bcb7c93a69ce59955c37d0182d6d78ac443e6ae8365fb7e3f7f421
 
 name:           prop
 version:        0.1.0.0
@@ -70,7 +70,7 @@ executable prop
 
 test-suite prop-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: tests.hs
   other-modules:
       Paths_prop
   hs-source-dirs:
