@@ -23,6 +23,9 @@ unitTests = testGroup "Unit tests"
 
     , testCase "Peirce's theorem" $
         clausesEntail peirceClauses peirceQuery @?= True
+
+    , testCase "Destructive dilemma" $
+        clausesEntail destructiveClauses destructiveQuery @?= True
     ]
 
 a = Var "A"
@@ -47,3 +50,6 @@ fregeQuery = Query $ Impl (Impl p q) (Impl p r)
 
 peirceClauses = [Impl (Impl a b) a]
 peirceQuery = Query a
+
+destructiveClauses = [Impl p q, Impl a b, Dis (Neg q) (Neg b)]
+destructiveQuery = Query $ Dis (neg p) (neg a)
