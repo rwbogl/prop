@@ -26,6 +26,7 @@ dependencies:
 - mtl
 - tasty
 - tasty-hunit
+- optparse-applicative
 
 library:
   source-dirs: src

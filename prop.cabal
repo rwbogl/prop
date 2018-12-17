@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8e085d5224bcb7c93a69ce59955c37d0182d6d78ac443e6ae8365fb7e3f7f421
+-- hash: 979bed7fc72d119cbd7007e76ef4c1832c94fa91b0b4deb81414fb0b7e9c175f
 
 name:           prop
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
       base >=4.7 && <5
     , containers
     , mtl
+    , optparse-applicative
     , parsec
     , tasty
     , tasty-hunit
@@ -61,6 +62,7 @@ executable prop
       base >=4.7 && <5
     , containers
     , mtl
+    , optparse-applicative
     , parsec
     , prop
     , tasty
@@ -80,6 +82,7 @@ test-suite prop-test
       base >=4.7 && <5
     , containers
     , mtl
+    , optparse-applicative
     , parsec
     , prop
     , tasty
