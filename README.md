@@ -82,65 +82,95 @@ answer is always correct).
 In the current implementation, the program actually finds the *shortest*
 possible proof by contradiction.
 
-## Another example
+# Examples
 
-In the file `tests/test.prop`:
+All theorems in propositional logic are "routine" to prove, in the sense that
+a computer can easily do it. `prop` is one such way to do this. Given a theorem
+in propositional logic, we must only give `prop` the hypotheses as clauses, and
+then ask if the conclusion can be proven from them. Below are two examples of
+this: *Frege's theorem* and *Peirce's law*.
+
+## Frege's theorem
+
+In propositional logic, [Frege's
+theorem](https://en.wikipedia.org/wiki/Frege%27s_theorem) is the tautology
 
 ```
-(A + B) * (C + D).
-~D.
-~B.
-?A * C.
-?A * D.
+(P -> (Q -> R)) -> ((P -> Q) -> (P -> R))
+```
+
+Prop can easily verify this implication. In `tests/frege.prop`:
+
+```
+P -> (Q -> R).
+? (P -> Q) -> (P -> R).
 ```
 
 Output:
 
 ```
-$ ./main tests/test.ph
+$ prop tests/frege.prop
 THEOREM. The clauses
-	[(A + B) * (C + D),~D,~B]
+	[P -> (Q -> R)]
 imply the statement
-	A * C.
+	(P -> Q) -> (P -> R).
 PROOF. Translate everything into conjunctive normal form:
-	Clauses: [(A + B) * (C + D),~D,~B]
-	Query: A * C
+	Clauses: [~P + (~Q + R)]
+	Query: (P + (~P + R)) * (~Q + (~P + R))
 Assume, for the sake of contradiction,
-	~A + ~C.
+	(~P * (P * ~R)) + (Q * (P * ~R)).
 Then we may reason as follows.
 The clauses
-	A + B
-and
-	~B
+	[~P + Q,~P + (~Q + R)]
 imply
-	A.
+	~P + R.
 The clauses
-	C + D
-and
-	~D
+	[P,~P + R]
 imply
-	C.
+	R.
 The clauses
-	~A + ~C
-and
-	C
-imply
-	~A.
-The clauses
-	~A
-and
-	A
+	[R,~R]
 imply
 	[].
 But this is the empty clause, a contradiction!
 Our original statement must follow.
 		Q.E.D.
+```
+
+## Peirce's law
+
+[Peirce's law](https://en.wikipedia.org/wiki/Peirce%27s_law) states that `((a
+-> b) -> a) -> a`. This is trivial to check with `prop`. In
+`tests/peirce.prop`:
+
+```
+((a -> b) -> a).
+? a.
+```
+
+Output:
+
+```
+$ prop tests/peirce.prop
 THEOREM. The clauses
-	[(A + B) * (C + D),~D,~B]
-DO NOT imply the statement
-	A * D.
-PROOF. It is routine to check that the resolution algorithm ends in saturation.
-Therefore the statement does not follow.
-(But it may follow under stronger assumptions!)
+	[(a -> b) -> a]
+imply the statement
+	a.
+PROOF. Translate everything into conjunctive normal form:
+	Clauses: [(a + a) * (~b + a)]
+	Query: a
+Assume, for the sake of contradiction,
+	~a.
+Then we may reason as follows.
+The clauses
+	[a + a,~a]
+imply
+	a.
+The clauses
+	[a,~a]
+imply
+	[].
+But this is the empty clause, a contradiction!
+Our original statement must follow.
 		Q.E.D.
 ```
