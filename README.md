@@ -2,21 +2,12 @@
 
 A simple resolution-based theorem prover for propositional logic in Haskell.
 
-I started writing this small program to learn more about resolution-based
-theorem proving and Haskell. I begin this project after [Write Yourself
-a Scheme in 48
-Hours](https://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours), but
-became boring. (Because of how I started, the parsing in `prop` is a little
-weak.)
-
-Resolution is a simple logical inference rule. It merely states that, given `A + B`
-and `~A + C`, you can conclude `B + C`, where `+` denotes "logical or" and `*`
-denotes "logical and." In other words, you can *resolve out* complementary
-variables.
-
-The rule is pretty straightforward to prove, requiring only the law of the
-excluded middle. If `A`, then `~A` is false, so `C`. If `~A`, then `A` is
-false, so `B`. Therefore `B + C`.
+Resolution is a simple logical inference rule. If we write `+` for "logical
+or," and `*` for "logical and," then the resolution rule states that, if
+`A + B` and `~A + C`, then `B + C`. In other words, you can *resolve out*
+complementary variables. The rule is straightforward to prove, requiring only
+the law of the excluded middle. If `A`, then `~A` is false, so `C`. If `~A`,
+then `A` is false, so `B`. Therefore `B + C`.
 
 This argument is a special case of this more general rule:
 
@@ -24,8 +15,8 @@ This argument is a special case of this more general rule:
 (A -> P) * (B -> Q) * (A + B) -> P + Q
 ```
 
-Let's ask `prop` to prove this for us. In the file `tests/resolution.prop` is an
-equivalent form:
+Let's ask `prop` to prove this for us. In the file `tests/resolution.prop` is
+an equivalent form:
 
 ```
 A -> P.
