@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 979bed7fc72d119cbd7007e76ef4c1832c94fa91b0b4deb81414fb0b7e9c175f
+-- hash: ffba9891796f12e8c3b804cfd4e9eb1115f46918f5436d4cc7d1069df9314bef
 
 name:           prop
 version:        0.1.0.0
@@ -15,7 +17,6 @@ copyright:      2018 Robert Dougherty-Bliss
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
     README.md
 
