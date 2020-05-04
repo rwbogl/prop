@@ -62,12 +62,57 @@ Our original statement must follow.
 
 This proof is circular of course, but shows the power of the resolution rule.
 
-The full algorithm is quite simple. Assume the negation of the desired
-statement, then resolve until you reach a contradiction or cannot resolve any
-further. If you reach a contradiction, then the original statement must have
-been true. (Assuming that your initial clauses were consistent!) If you cannot
-resolve any further, then the statement does not follow from your clauses. This
-procedure is *complete* (it will always find an answer) and *sound* (that
+## Installation
+
+To install `prop`, first install the [Haskell Tool
+Stack](https://docs.haskellstack.org/en/stable/README/) for your platform, then
+run the following command inside the project's directory:
+
+```
+stack build
+```
+
+You can then run `prop` with
+
+```
+stack exec -- prop
+```
+
+To make it easier, you can run
+
+```
+stack install
+```
+
+which should then let you just call `prop` directly, as in
+
+```
+prop ./tests/frege.prop
+```
+
+To run the test suite, try
+
+```
+stack test
+```
+
+## The resolution algorithm
+
+The full "resolution" algorithm that `prop` uses is the repeated application of
+the resolution rule. It goes like this:
+
+- Assume the negation of the desired
+statement.
+
+- Resolve until you reach a contradiction or cannot resolve any further.
+
+- If you reach a contradiction, then the original statement must have
+been true. (Assuming that your initial clauses were consistent!)
+
+- If you cannot resolve any further, then the statement does not follow from
+  your clauses.
+
+This procedure is *complete* (it will always find an answer) and *sound* (that
 answer is always correct).
 
 In the current implementation, the program actually finds the *shortest*
